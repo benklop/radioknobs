@@ -38,7 +38,7 @@ void leftButtonInterrupt() {
   if (trigger == FALLING) {
     unsigned long left_release_interval;
     if (left_release_time > millis()) {//there was a rollover
-      left_release_interval = (4294967295 - left_release_time) + millis();
+      left_release_interval = (4294967295L - left_release_time) + millis();
     } else {
       left_release_interval = millis() - left_release_time;
     }
@@ -47,7 +47,7 @@ void leftButtonInterrupt() {
       left_button = DOUBLE_PRESS;
     }
     else {
-      Timer1.setPeriod(LONG_PRESS_MILLIS * 1000);
+      Timer1.setPeriod(LONG_PRESS_MILLIS * 1000L);
       Timer1.attachInterrupt(leftButtonLongPressTimer);
       Timer1.start();
     }
@@ -56,7 +56,7 @@ void leftButtonInterrupt() {
     if (! left_long_pressed) {
       left_release_time = millis();
       Timer1.detachInterrupt();
-      Timer1.setPeriod(DOUBLE_PRESS_MILLIS * 1000);
+      Timer1.setPeriod(DOUBLE_PRESS_MILLIS * 1000L);
       Timer1.attachInterrupt(leftButtonShortPressTimer);
       Timer1.start();
     }
@@ -80,7 +80,7 @@ void rightButtonInterrupt() {
   if (trigger == FALLING) {
     unsigned long right_release_interval;
     if (right_release_time > millis()) {//there was a rollover
-      right_release_interval = (4294967295 - right_release_time) + millis();
+      right_release_interval = (4294967295L - right_release_time) + millis();
     } else {
       right_release_interval = millis() - right_release_time;
     }
@@ -89,7 +89,7 @@ void rightButtonInterrupt() {
       right_button = DOUBLE_PRESS;
     }
     else {
-      Timer1.setPeriod(LONG_PRESS_MILLIS * 1000);
+      Timer1.setPeriod(LONG_PRESS_MILLIS * 1000L);
       Timer1.attachInterrupt(rightButtonLongPressTimer);
       Timer1.start();
     }
@@ -98,7 +98,7 @@ void rightButtonInterrupt() {
     if (! right_long_pressed) {
       right_release_time = millis();
       Timer1.detachInterrupt();
-      Timer1.setPeriod(DOUBLE_PRESS_MILLIS * 1000);
+      Timer1.setPeriod(DOUBLE_PRESS_MILLIS * 1000L);
       Timer1.attachInterrupt(rightButtonShortPressTimer);
       Timer1.start();
     }
@@ -129,7 +129,7 @@ void setup() {
   attachPCINT(digitalPinToPCINT(RIGHT_KNOB_BUTTON), rightButtonInterrupt, CHANGE);
 
   //.5 second timer for long press, in microseconds
-  Timer1.initialize(LONG_PRESS_MILLIS * 1000);
+  Timer1.initialize(LONG_PRESS_MILLIS * 1000L);
 }
 
 void loop() {
