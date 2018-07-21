@@ -7,12 +7,12 @@
 #include <Keyboard.h>
 
 
-#define LEFT_KNOB_A 0
-#define LEFT_KNOB_B 1
+#define LEFT_KNOB_A 2
+#define LEFT_KNOB_B 3
 #define LEFT_KNOB_BUTTON 8
 
-#define RIGHT_KNOB_A 2
-#define RIGHT_KNOB_B 3
+#define RIGHT_KNOB_A 0
+#define RIGHT_KNOB_B 1
 #define RIGHT_KNOB_BUTTON 9
 
 #define UNPRESSED 0
@@ -129,22 +129,28 @@ void setup() {
 
   //.5 second timer for long press, in microseconds
   Timer1.initialize(LONG_PRESS_MILLIS * 1000L);
+  Serial.begin(9600);
 }
 
 void loop() {
   int left_knob, right_knob;
   
   left_knob = knobLeft.read();
-  knobLeft.write(0);
-  if (left_knob > 0) {
+  if (left_knob > 0 && left_knob % 4 == 0) {
     for (int i = 0; i < left_knob / 4; i++) {
+      Serial.print("Left Knob UP");
+      Serial.println();
       Keyboard.write(KEY_RIGHT_ARROW);
     }
+    knobLeft.write(0);
   }
-  else if (left_knob < 0) {
-    for (int i = 0; i > left_knob / 4; i--) {
+  else if (left_knob < 0 && left_knob % 4 == 0) {
+    for (int i = 0; i > left_knob / 4; i--) { 
+      Serial.print("Left Knob DOWN");
+      Serial.println();
       Keyboard.write(KEY_LEFT_ARROW);
     }
+    knobLeft.write(0);
   }
   
   right_knob = knobRight.read();
