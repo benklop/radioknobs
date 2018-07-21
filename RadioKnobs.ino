@@ -165,7 +165,7 @@ void loop() {
   else if (right_knob < 0 && right_knob % 4 == 0) {
     for (int i = 0; i > right_knob / 4; i--) {
       Serial.print("Right Knob DOWN");
-      Serial.println()
+      Serial.println();
       Keyboard.write(KEY_DOWN_ARROW);
     }
     knobRight.write(0);
