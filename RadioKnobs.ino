@@ -11,8 +11,8 @@
 #define LEFT_KNOB_B 3
 #define LEFT_KNOB_BUTTON 8
 
-#define RIGHT_KNOB_A 0
-#define RIGHT_KNOB_B 1
+#define RIGHT_KNOB_A 1
+#define RIGHT_KNOB_B 0
 #define RIGHT_KNOB_BUTTON 9
 
 #define UNPRESSED 0
