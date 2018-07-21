@@ -31,81 +31,6 @@ volatile unsigned long left_release_time, right_release_time = 0;
 volatile bool left_long_pressed, right_long_pressed = false;
 volatile int left_button, right_button = UNPRESSED;
 
-void setup() {
-  pinMode(LEFT_KNOB_A, INPUT_PULLUP);
-  pinMode(LEFT_KNOB_B, INPUT_PULLUP);
-  pinMode(LEFT_KNOB_BUTTON, INPUT_PULLUP);
-  pinMode(RIGHT_KNOB_A, INPUT_PULLUP);
-  pinMode(RIGHT_KNOB_B, INPUT_PULLUP);
-  pinMode(RIGHT_KNOB_BUTTON, INPUT_PULLUP);
-
-  //interrupts for buttons
-  attachPCINT(digitalPinToPCINT(LEFT_KNOB_BUTTON), leftButtonInterrupt, CHANGE);
-  attachPCINT(digitalPinToPCINT(RIGHT_KNOB_BUTTON), rightButtonInterrupt, CHANGE);
-
-  //.5 second timer for long press, in microseconds
-  Timer1.initialize(LONG_PRESS_MILLIS * 1000);
-}
-
-void loop() {
-  int left_knob, right_knob;
-  
-  left_knob = knobLeft.read();
-  knobLeft.write(0);
-  if (left_knob > 0) {
-    for (int i = 0; i < left_knob / 4; i++) {
-      Keyboard.write(KEY_RIGHT_ARROW);
-    }
-  }
-  else if (left_knob < 0) {
-    for (int i = 0; i > left_knob / 4; i--) {
-      Keyboard.write(KEY_LEFT_ARROW);
-    }
-  }
-  
-  right_knob = knobRight.read();
-  knobRight.write(0);
-  if (right_knob > 0) {
-    for (int i = 0; i < right_knob / 4; i++) {
-      Keyboard.write(KEY_UP_ARROW);
-    }
-  }
-  else if (right_knob < 0) {
-    for (int i = 0; i > right_knob / 4; i--) {
-      Keyboard.write(KEY_DOWN_ARROW);
-    }
-  }
-
-  switch(left_button) {
-    case SHORT_PRESS:
-      Keyboard.write(KEY_F1);
-      break;
-
-    case LONG_PRESS:
-      Keyboard.write(KEY_F2);
-      break;
-
-    case DOUBLE_PRESS:
-      Keyboard.write(KEY_F3);
-      break;
-  }
-  left_button = UNPRESSED;
-
-  switch(right_button) {
-    case SHORT_PRESS:
-      Keyboard.write(KEY_F4);
-      break;
-
-    case LONG_PRESS:
-      Keyboard.write(KEY_F5);
-      break;
-
-    case DOUBLE_PRESS:
-      Keyboard.write(KEY_F6);
-      break;
-  }
-  right_button = UNPRESSED;
-}
 
 void leftButtonInterrupt() {
   uint8_t trigger = getPCINTTrigger(digitalPinToPCINT(LEFT_KNOB_BUTTON));
@@ -189,4 +114,80 @@ void rightButtonLongPressTimer() {
   Timer1.detachInterrupt();
   right_long_pressed = true;
   right_button = LONG_PRESS;
+}
+
+void setup() {
+  pinMode(LEFT_KNOB_A, INPUT_PULLUP);
+  pinMode(LEFT_KNOB_B, INPUT_PULLUP);
+  pinMode(LEFT_KNOB_BUTTON, INPUT_PULLUP);
+  pinMode(RIGHT_KNOB_A, INPUT_PULLUP);
+  pinMode(RIGHT_KNOB_B, INPUT_PULLUP);
+  pinMode(RIGHT_KNOB_BUTTON, INPUT_PULLUP);
+
+  //interrupts for buttons
+  attachPCINT(digitalPinToPCINT(LEFT_KNOB_BUTTON), leftButtonInterrupt, CHANGE);
+  attachPCINT(digitalPinToPCINT(RIGHT_KNOB_BUTTON), rightButtonInterrupt, CHANGE);
+
+  //.5 second timer for long press, in microseconds
+  Timer1.initialize(LONG_PRESS_MILLIS * 1000);
+}
+
+void loop() {
+  int left_knob, right_knob;
+  
+  left_knob = knobLeft.read();
+  knobLeft.write(0);
+  if (left_knob > 0) {
+    for (int i = 0; i < left_knob / 4; i++) {
+      Keyboard.write(KEY_RIGHT_ARROW);
+    }
+  }
+  else if (left_knob < 0) {
+    for (int i = 0; i > left_knob / 4; i--) {
+      Keyboard.write(KEY_LEFT_ARROW);
+    }
+  }
+  
+  right_knob = knobRight.read();
+  knobRight.write(0);
+  if (right_knob > 0) {
+    for (int i = 0; i < right_knob / 4; i++) {
+      Keyboard.write(KEY_UP_ARROW);
+    }
+  }
+  else if (right_knob < 0) {
+    for (int i = 0; i > right_knob / 4; i--) {
+      Keyboard.write(KEY_DOWN_ARROW);
+    }
+  }
+
+  switch(left_button) {
+    case SHORT_PRESS:
+      Keyboard.write(KEY_F1);
+      break;
+
+    case LONG_PRESS:
+      Keyboard.write(KEY_F2);
+      break;
+
+    case DOUBLE_PRESS:
+      Keyboard.write(KEY_F3);
+      break;
+  }
+  left_button = UNPRESSED;
+
+  switch(right_button) {
+    case SHORT_PRESS:
+      Keyboard.write(KEY_F4);
+      break;
+
+    case LONG_PRESS:
+      Keyboard.write(KEY_F5);
+      break;
+
+    case DOUBLE_PRESS:
+      Keyboard.write(KEY_F6);
+      break;
+  }
+  right_button = UNPRESSED;
 }
