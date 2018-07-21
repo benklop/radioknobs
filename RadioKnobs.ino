@@ -23,13 +23,42 @@
 #define DOUBLE_PRESS_MILLIS 250
 #define LONG_PRESS_MILLIS 500
 
-Encoder knobLeft(LEFT_KNOB_A, LEFT_KNOB_B);
-Encoder knobRight(RIGHT_KNOB_A, RIGHT_KNOB_B);
-
 volatile unsigned long left_release_time, right_release_time = 0;
 
 volatile bool left_long_pressed, right_long_pressed = false;
 volatile int left_button, right_button = UNPRESSED;
+
+
+void leftButtonInterrupt() {
+  uint8_t trigger = getPCINTTrigger(digitalPinToPCINT(LEFT_KNOB_BUTTON));
+
+  if (trigger == FALLING) {
+    unsigned long left_release_interval;
+    if (left_release_time > millis()) {//there was a rollover
+      left_release_interval = (4294967295 - left_release_time) + millis();
+    } else {
+      left_release_interval = millis() - left_release_time;
+    }
+    
+    if (left_release_interval < DOUBLE_PRESS_MILLIS) {
+      left_button = DOUBLE_PRESS;
+    }
+    else {
+      Timer1.setPeriod(LONG_PRESS_MILLIS * 1000);
+      Timer1.attachInterrupt(leftButtonLongPressTimer);
+      Timer1.start();
+    }
+  }
+  else  if (trigger == RISING) {
+    if (! left_long_pressed) {
+      left_release_time = millis();
+      Timer1.detachInterrupt();
+      Timer1.setPeriod(DOUBLE_PRESS_MILLIS * 1000);
+      Timer1.attachInterrupt(leftButtonShortPressTimer);
+      Timer1.start();
+    }
+  }    
+}
 
 void leftButtonShortPressTimer() {
   Timer1.detachInterrupt();
@@ -42,32 +71,32 @@ void leftButtonLongPressTimer() {
   left_button = LONG_PRESS;
 }
 
-void leftButtonInterrupt() {
-  uint8_t trigger = getPCINTTrigger(digitalPinToPCINT(LEFT_KNOB_BUTTON));
+void rightButtonInterrupt() {
+  uint8_t trigger = getPCINTTrigger(digitalPinToPCINT(RIGHT_KNOB_BUTTON));
 
   if (trigger == FALLING) {
-    unsigned long left_release_interval;
-    if (left_release_time > millis()) {//there was a rollover
-      left_release_interval = (4294967295L - left_release_time) + millis();
+    unsigned long right_release_interval;
+    if (right_release_time > millis()) {//there was a rollover
+      right_release_interval = (4294967295 - right_release_time) + millis();
     } else {
-      left_release_interval = millis() - left_release_time;
+      right_release_interval = millis() - right_release_time;
     }
     
-    if (left_release_interval < DOUBLE_PRESS_MILLIS) {
-      left_button = DOUBLE_PRESS;
+    if (right_release_interval < DOUBLE_PRESS_MILLIS) {
+      right_button = DOUBLE_PRESS;
     }
     else {
-      Timer1.setPeriod(LONG_PRESS_MILLIS * 1000L);
-      Timer1.attachInterrupt(leftButtonLongPressTimer);
+      Timer1.setPeriod(LONG_PRESS_MILLIS * 1000);
+      Timer1.attachInterrupt(rightButtonLongPressTimer);
       Timer1.start();
     }
   }
   else  if (trigger == RISING) {
-    if (! left_long_pressed) {
-      left_release_time = millis();
+    if (! right_long_pressed) {
+      right_release_time = millis();
       Timer1.detachInterrupt();
-      Timer1.setPeriod(DOUBLE_PRESS_MILLIS * 1000L);
-      Timer1.attachInterrupt(leftButtonShortPressTimer);
+      Timer1.setPeriod(DOUBLE_PRESS_MILLIS * 1000);
+      Timer1.attachInterrupt(rightButtonShortPressTimer);
       Timer1.start();
     }
   }    
@@ -84,43 +113,15 @@ void rightButtonLongPressTimer() {
   right_button = LONG_PRESS;
 }
 
-void rightButtonInterrupt() {
-  uint8_t trigger = getPCINTTrigger(digitalPinToPCINT(RIGHT_KNOB_BUTTON));
-
-  if (trigger == FALLING) {
-    unsigned long right_release_interval;
-    if (right_release_time > millis()) {//there was a rollover
-      right_release_interval = (4294967295L - right_release_time) + millis();
-    } else {
-      right_release_interval = millis() - right_release_time;
-    }
-    
-    if (right_release_interval < DOUBLE_PRESS_MILLIS) {
-      right_button = DOUBLE_PRESS;
-    }
-    else {
-      Timer1.setPeriod(LONG_PRESS_MILLIS * 1000L);
-      Timer1.attachInterrupt(rightButtonLongPressTimer);
-      Timer1.start();
-    }
-  }
-  else  if (trigger == RISING) {
-    if (! right_long_pressed) {
-      right_release_time = millis();
-      Timer1.detachInterrupt();
-      Timer1.setPeriod(DOUBLE_PRESS_MILLIS * 1000L);
-      Timer1.attachInterrupt(rightButtonShortPressTimer);
-      Timer1.start();
-    }
-  }    
-}
+Encoder knobLeft(LEFT_KNOB_A, LEFT_KNOB_B);
+Encoder knobRight(RIGHT_KNOB_A, RIGHT_KNOB_B);
 
 void setup() {
-  pinMode(LEFT_KNOB_A, INPUT_PULLUP);
-  pinMode(LEFT_KNOB_B, INPUT_PULLUP);
+  //pinMode(LEFT_KNOB_A, INPUT_PULLUP);
+  //pinMode(LEFT_KNOB_B, INPUT_PULLUP);
   pinMode(LEFT_KNOB_BUTTON, INPUT_PULLUP);
-  pinMode(RIGHT_KNOB_A, INPUT_PULLUP);
-  pinMode(RIGHT_KNOB_B, INPUT_PULLUP);
+  //pinMode(RIGHT_KNOB_A, INPUT_PULLUP);
+  //pinMode(RIGHT_KNOB_B, INPUT_PULLUP);
   pinMode(RIGHT_KNOB_BUTTON, INPUT_PULLUP);
 
   //interrupts for buttons
@@ -128,7 +129,7 @@ void setup() {
   attachPCINT(digitalPinToPCINT(RIGHT_KNOB_BUTTON), rightButtonInterrupt, CHANGE);
 
   //.5 second timer for long press, in microseconds
-  Timer1.initialize(LONG_PRESS_MILLIS * 1000L);
+  Timer1.initialize(LONG_PRESS_MILLIS * 1000);
 }
 
 void loop() {
