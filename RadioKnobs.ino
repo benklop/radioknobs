@@ -31,6 +31,16 @@ volatile unsigned long left_release_time, right_release_time = 0;
 volatile bool left_long_pressed, right_long_pressed = false;
 volatile int left_button, right_button = UNPRESSED;
 
+void leftButtonShortPressTimer() {
+  Timer1.detachInterrupt();
+  left_button = SHORT_PRESS;
+}
+
+void leftButtonLongPressTimer() {
+  Timer1.detachInterrupt();
+  left_long_pressed = true;
+  left_button = LONG_PRESS;
+}
 
 void leftButtonInterrupt() {
   uint8_t trigger = getPCINTTrigger(digitalPinToPCINT(LEFT_KNOB_BUTTON));
@@ -63,15 +73,15 @@ void leftButtonInterrupt() {
   }    
 }
 
-void leftButtonShortPressTimer() {
+void rightButtonShortPressTimer() {
   Timer1.detachInterrupt();
-  left_button = SHORT_PRESS;
+  right_button = SHORT_PRESS;
 }
 
-void leftButtonLongPressTimer() {
+void rightButtonLongPressTimer() {
   Timer1.detachInterrupt();
-  left_long_pressed = true;
-  left_button = LONG_PRESS;
+  right_long_pressed = true;
+  right_button = LONG_PRESS;
 }
 
 void rightButtonInterrupt() {
@@ -103,17 +113,6 @@ void rightButtonInterrupt() {
       Timer1.start();
     }
   }    
-}
-
-void rightButtonShortPressTimer() {
-  Timer1.detachInterrupt();
-  right_button = SHORT_PRESS;
-}
-
-void rightButtonLongPressTimer() {
-  Timer1.detachInterrupt();
-  right_long_pressed = true;
-  right_button = LONG_PRESS;
 }
 
 void setup() {
