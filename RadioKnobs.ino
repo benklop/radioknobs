@@ -154,45 +154,54 @@ void loop() {
   }
   
   right_knob = knobRight.read();
-  knobRight.write(0);
-  if (right_knob > 0) {
+  if (right_knob > 0 && right_knob % 4 == 0) {
     for (int i = 0; i < right_knob / 4; i++) {
+      Serial.print("Right Knob UP");
+      Serial.println();
       Keyboard.write(KEY_UP_ARROW);
     }
+    knobRight.write(0);
   }
-  else if (right_knob < 0) {
+  else if (right_knob < 0 && right_knob % 4 == 0) {
     for (int i = 0; i > right_knob / 4; i--) {
+      Serial.print("Right Knob DOWN");
+      Serial.println()
       Keyboard.write(KEY_DOWN_ARROW);
     }
+    knobRight.write(0);
   }
 
   switch(left_button) {
     case SHORT_PRESS:
       Keyboard.write(KEY_F1);
+      left_button = UNPRESSED;
       break;
 
     case LONG_PRESS:
       Keyboard.write(KEY_F2);
+      left_button = UNPRESSED;
       break;
 
     case DOUBLE_PRESS:
       Keyboard.write(KEY_F3);
+      left_button = UNPRESSED;
       break;
   }
-  left_button = UNPRESSED;
 
   switch(right_button) {
     case SHORT_PRESS:
       Keyboard.write(KEY_F4);
+      right_button = UNPRESSED;
       break;
 
     case LONG_PRESS:
       Keyboard.write(KEY_F5);
+      right_button = UNPRESSED;
       break;
 
     case DOUBLE_PRESS:
       Keyboard.write(KEY_F6);
+      right_button = UNPRESSED;
       break;
   }
-  right_button = UNPRESSED;
 }
