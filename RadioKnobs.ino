@@ -47,9 +47,6 @@ void setup() {
   attachPCINT(digitalPinToPCINT(LEFT_KNOB_BUTTON), leftButtonInterrupt, CHANGE);
   attachPCINT(digitalPinToPCINT(RIGHT_KNOB_BUTTON), rightButtonInterrupt, CHANGE);
 
-  //.5 second timer for long press, in microseconds
-  Timer1.initialize(10000000);
-
   //debugging
   #ifdef DEBUG
     Serial.begin(9600);
