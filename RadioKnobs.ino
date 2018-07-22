@@ -98,7 +98,7 @@ void rightButtonInterrupt() {
     }
     else {
       Timer1.setPeriod(LONG_PRESS_MILLIS * 1000L);
-      Timer1.attachInterrupt(rightButtonShortPressTimer);
+      Timer1.attachInterrupt(rightButtonLongPressTimer);
       Timer1.start();
     }
   }
@@ -107,7 +107,7 @@ void rightButtonInterrupt() {
     if (! right_long_pressed) {
       Timer1.detachInterrupt();
       Timer1.setPeriod(DOUBLE_PRESS_MILLIS * 1000L);
-      Timer1.attachInterrupt(rightButtonDoublePressTimer);
+      Timer1.attachInterrupt(rightButtonShortPressTimer);
       Timer1.start();
     }
   }    
