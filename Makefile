@@ -6,7 +6,7 @@ ALTERNATE_CORE      = sparkfun
 BOARD_TAG           = promicro
 BOARD_SUB	    = 16MHzatmega32U4
 CPPFLAGS            = -DARDUINO_ARCH_AVR
-ARDUINO_LIBS        = HID Encoder Keyboard PinChangeInterrupt TimerOne
+ARDUINO_LIBS        = HID Encoder Keyboard PinChangeInterrupt
 
 include $(ARDMK_DIR)/Arduino.mk
 
