@@ -1,4 +1,5 @@
 #include <TimerOne.h>
+#include <TimerThree.h>
 #include <PinChangeInterrupt.h>
 #include <PinChangeInterruptBoards.h>
 #include <PinChangeInterruptPins.h>
@@ -29,12 +30,12 @@ volatile bool left_long_pressed, right_long_pressed = false;
 volatile int left_button, right_button = UNPRESSED;
 
 void leftButtonShortPressTimer() {
-  Timer1.detachInterrupt();
+  Timer1.stop();
   left_button = SHORT_PRESS;
 }
 
 void leftButtonLongPressTimer() {
-  Timer1.detachInterrupt();
+  Timer1.stop();
   left_long_pressed = true;
   left_button = LONG_PRESS;
 }
@@ -54,30 +55,30 @@ void leftButtonInterrupt() {
       left_button = DOUBLE_PRESS;
     }
     else {
-      Timer1.detachInterrupt();
+      Timer1.stop();
       Timer1.setPeriod(500000);
       Timer1.attachInterrupt(leftButtonLongPressTimer);
-      Timer1.start();
+      Timer1.restart();
     }
   }
   else  if (trigger == RISING) {
     left_release_time = millis();
     if (! left_long_pressed) {
-      Timer1.detachInterrupt();
+      Timer1.stop();
       Timer1.setPeriod(250000);
       Timer1.attachInterrupt(leftButtonShortPressTimer);
-      Timer1.start();
+      Timer1.restart();
     }
   }    
 }
 
 void rightButtonShortPressTimer() {
-  Timer1.detachInterrupt();
+  Timer1.stop();
   right_button = SHORT_PRESS;
 }
 
 void rightButtonLongPressTimer() {
-  Timer1.detachInterrupt();
+  Timer1.stop();
   right_long_pressed = true;
   right_button = LONG_PRESS;
 }
@@ -97,18 +98,19 @@ void rightButtonInterrupt() {
       right_button = DOUBLE_PRESS;
     }
     else {
+      Timer1.stop();
       Timer1.setPeriod(LONG_PRESS_MILLIS * 1000L);
       Timer1.attachInterrupt(rightButtonLongPressTimer);
-      Timer1.start();
+      Timer1.restart();
     }
   }
   else  if (trigger == RISING) {
     right_release_time = millis();
     if (! right_long_pressed) {
-      Timer1.detachInterrupt();
+      Timer1.stop();
       Timer1.setPeriod(DOUBLE_PRESS_MILLIS * 1000L);
       Timer1.attachInterrupt(rightButtonShortPressTimer);
-      Timer1.start();
+      Timer1.restart();
     }
   }    
 }
@@ -125,7 +127,7 @@ void setup() {
   attachPCINT(digitalPinToPCINT(RIGHT_KNOB_BUTTON), rightButtonInterrupt, CHANGE);
 
   //.5 second timer for long press, in microseconds
-  //Timer1.initialize(LONG_PRESS_MILLIS * 1000L);
+  Timer1.initialize(10000000);
 
   //debugging
   #ifdef DEBUG
