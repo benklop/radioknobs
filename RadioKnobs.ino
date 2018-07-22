@@ -116,11 +116,7 @@ Encoder knobLeft(LEFT_KNOB_A, LEFT_KNOB_B);
 Encoder knobRight(RIGHT_KNOB_A, RIGHT_KNOB_B);
 
 void setup() {
-  //pinMode(LEFT_KNOB_A, INPUT_PULLUP);
-  //pinMode(LEFT_KNOB_B, INPUT_PULLUP);
   pinMode(LEFT_KNOB_BUTTON, INPUT_PULLUP);
-  //pinMode(RIGHT_KNOB_A, INPUT_PULLUP);
-  //pinMode(RIGHT_KNOB_B, INPUT_PULLUP);
   pinMode(RIGHT_KNOB_BUTTON, INPUT_PULLUP);
 
   //interrupts for buttons
@@ -129,7 +125,11 @@ void setup() {
 
   //.5 second timer for long press, in microseconds
   Timer1.initialize(LONG_PRESS_MILLIS * 1000L);
-  Serial.begin(9600);
+
+  //debugging
+  #ifdef DEBUG
+    Serial.begin(9600);
+  #endif
 }
 
 void loop() {
@@ -138,17 +138,21 @@ void loop() {
   left_knob = knobLeft.read();
   if (left_knob > 0 && left_knob % 4 == 0) {
     for (int i = 0; i < left_knob / 4; i++) {
-      Serial.print("Left Knob UP");
-      Serial.println();
       Keyboard.write(KEY_RIGHT_ARROW);
+      #ifdef DEBUG
+        Serial.print("Left Knob UP");
+        Serial.println();
+      #endif
     }
     knobLeft.write(0);
   }
   else if (left_knob < 0 && left_knob % 4 == 0) {
-    for (int i = 0; i > left_knob / 4; i--) { 
-      Serial.print("Left Knob DOWN");
-      Serial.println();
+    for (int i = 0; i > left_knob / 4; i--) {
       Keyboard.write(KEY_LEFT_ARROW);
+      #ifdef DEBUG
+        Serial.print("Left Knob DOWN");
+        Serial.println();
+      #endif
     }
     knobLeft.write(0);
   }
@@ -156,17 +160,21 @@ void loop() {
   right_knob = knobRight.read();
   if (right_knob > 0 && right_knob % 4 == 0) {
     for (int i = 0; i < right_knob / 4; i++) {
-      Serial.print("Right Knob UP");
-      Serial.println();
       Keyboard.write(KEY_UP_ARROW);
+      #ifdef DEBUG
+        Serial.print("Right Knob UP");
+        Serial.println();
+      #endif
     }
     knobRight.write(0);
   }
   else if (right_knob < 0 && right_knob % 4 == 0) {
     for (int i = 0; i > right_knob / 4; i--) {
-      Serial.print("Right Knob DOWN");
-      Serial.println();
       Keyboard.write(KEY_DOWN_ARROW);
+      #ifdef DEBUG
+        Serial.print("Right Knob DOWN");
+        Serial.println();
+      #endif
     }
     knobRight.write(0);
   }
