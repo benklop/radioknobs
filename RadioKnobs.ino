@@ -54,17 +54,17 @@ void leftButtonInterrupt() {
       left_button = DOUBLE_PRESS;
     }
     else {
-      //Timer1.detachInterrupt();
-      //Timer1.setPeriod(LONG_PRESS_MILLIS * 1000L);
-      //Timer1.attachInterrupt(leftButtonLongPressTimer);
-      //Timer1.start();
+      Timer1.detachInterrupt();
+      Timer1.setPeriod(500000);
+      Timer1.attachInterrupt(leftButtonLongPressTimer);
+      Timer1.start();
     }
   }
   else  if (trigger == RISING) {
     left_release_time = millis();
     if (! left_long_pressed) {
       Timer1.detachInterrupt();
-      Timer1.setPeriod(DOUBLE_PRESS_MILLIS * 1000L);
+      Timer1.setPeriod(250000);
       Timer1.attachInterrupt(leftButtonShortPressTimer);
       Timer1.start();
     }
